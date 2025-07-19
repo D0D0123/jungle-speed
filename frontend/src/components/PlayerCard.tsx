@@ -8,6 +8,7 @@ interface PlayerCardProps {
   totalPlayers: number;
   isCurrentPlayer: boolean;
   isCurrentTurn: boolean;
+  currentPlayerIndex: number;
 }
 
 const PlayerCard: React.FC<PlayerCardProps> = ({
@@ -15,13 +16,21 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
   position,
   totalPlayers,
   isCurrentPlayer,
-  isCurrentTurn
+  isCurrentTurn,
+  currentPlayerIndex
 }) => {
   const getCardPosition = () => {
-    const angle = (position * 360) / totalPlayers;
+    // Calculate relative position so current player is always at bottom (position 0)
+    let relativePosition = position - currentPlayerIndex;
+    if (relativePosition < 0) {
+      relativePosition += totalPlayers;
+    }
+    
+    // Adjust angle so position 0 is at bottom (90 degrees)
+    const angle = (relativePosition * 360) / totalPlayers + 90;
     const radius = 200;
-    const x = Math.cos((angle - 90) * Math.PI / 180) * radius;
-    const y = Math.sin((angle - 90) * Math.PI / 180) * radius;
+    const x = Math.cos((angle * Math.PI) / 180) * radius;
+    const y = Math.sin((angle * Math.PI) / 180) * radius;
     
     return {
       transform: `translate(${x}px, ${y}px)`

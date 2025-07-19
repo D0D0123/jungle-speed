@@ -40,6 +40,7 @@ class JungleSpeedGame {
     this.canGrabBottle = false;
     this.bottleGrabCooldown = false;
     this.activeCards = new Map();
+    this.usedJokers = new Set(); // Track jokers that have been used for bank transfers
     this.io = null;
   }
 
@@ -88,6 +89,7 @@ class JungleSpeedGame {
     this.currentPlayerIndex = 0;
     this.bank = [];
     this.activeCards.clear();
+    this.usedJokers.clear();
     return true;
   }
 
@@ -102,13 +104,15 @@ class JungleSpeedGame {
     const drawnCard = currentPlayer.drawDeck.pop();
     
     if (currentPlayer.activeCard) {
+      // Clean up any used joker tracking for the old card
+      this.usedJokers.delete(`${currentPlayer.id}-${currentPlayer.activeCard}`);
       currentPlayer.usedStack.push(currentPlayer.activeCard);
     }
     
     currentPlayer.activeCard = drawnCard;
     this.activeCards.set(currentPlayer.id, drawnCard);
     
-    this.canGrabBottle = this.checkForMatches() || this.isJoker(drawnCard);
+    this.canGrabBottle = this.checkForMatches() || this.isJokerActive();
     
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
     
@@ -129,31 +133,8 @@ class JungleSpeedGame {
     // Set cooldown temporarily
     this.bottleGrabCooldown = true;
     
-    if (this.canGrabBottle) {
-      if (this.isJokerActive()) {
-        this.bank.push(...player.usedStack);
-        player.usedStack = [];
-      } else {
-        const matchingPlayers = this.getMatchingPlayers();
-        const opponent = matchingPlayers.find(p => p.id !== playerId);
-        
-        if (opponent) {
-          player.drawDeck.unshift(...opponent.usedStack);
-          opponent.usedStack = [];
-          
-          if (this.bank.length > 0) {
-            player.drawDeck.unshift(...this.bank);
-            this.bank = [];
-          }
-        }
-      }
-      
-      // Reset bottle grab state after successful grab
-      this.canGrabBottle = false;
-      this.resetBottleState();
-      return { success: true, type: 'correct' };
-    } else {
-      // Penalty: collect all other players' used stacks
+    if (!this.canGrabBottle) {
+      // No valid grab opportunity - penalty
       this.players.forEach(p => {
         if (p.id !== playerId) {
           player.drawDeck.unshift(...p.usedStack);
@@ -164,14 +145,68 @@ class JungleSpeedGame {
       this.resetBottleState();
       return { success: true, type: 'penalty' };
     }
+
+    // Check if this is a joker situation
+    if (this.isJokerActive()) {
+      // Any player can grab on jokers
+      this.bank.push(...player.usedStack);
+      player.usedStack = [];
+      
+      // Mark all active jokers as used
+      this.activeCards.forEach((card, playerId) => {
+        if (this.isJoker(card)) {
+          this.usedJokers.add(`${playerId}-${card}`);
+        }
+      });
+      
+      // Winner gets next turn
+      this.currentPlayerIndex = this.players.findIndex(p => p.id === playerId);
+      this.canGrabBottle = false;
+      this.resetBottleState();
+      return { success: true, type: 'correct' };
+    }
+
+    // Check if this is a matching cards situation
+    const matchingPlayers = this.getMatchingPlayers();
+    const isPlayerInMatch = matchingPlayers.some(p => p.id === playerId);
+    
+    if (!isPlayerInMatch) {
+      // Player not involved in match - big penalty
+      this.players.forEach(p => {
+        if (p.id !== playerId) {
+          player.drawDeck.unshift(...p.usedStack);
+          p.usedStack = [];
+        }
+      });
+      
+      this.resetBottleState();
+      return { success: true, type: 'penalty' };
+    }
+
+    // Player is involved in match and grabbed bottle - they win
+    const opponents = matchingPlayers.filter(p => p.id !== playerId);
+    opponents.forEach(opponent => {
+      player.drawDeck.unshift(...opponent.usedStack);
+      opponent.usedStack = [];
+    });
+    
+    // Add bank cards to winner if any
+    if (this.bank.length > 0) {
+      player.drawDeck.unshift(...this.bank);
+      this.bank = [];
+    }
+    
+    // Winner gets next turn
+    this.currentPlayerIndex = this.players.findIndex(p => p.id === playerId);
+    this.canGrabBottle = false;
+    this.resetBottleState();
+    return { success: true, type: 'correct' };
   }
 
   resetBottleState() {
-    // Clear cooldown and reset bottle grab opportunity after 2 seconds
+    // Clear cooldown after 2 seconds, but don't automatically re-enable grabbing
     setTimeout(() => {
       this.bottleGrabCooldown = false;
-      // Check if there are still matches after the cooldown
-      this.canGrabBottle = this.checkForMatches() || this.isJokerActive();
       // Emit updated state to all clients after cooldown
       if (this.io) {
         this.io.emit('game-state', this.getGameState());
@@ -216,7 +251,11 @@ class JungleSpeedGame {
   }
 
   isJokerActive() {
-    return Array.from(this.activeCards.values()).some(card => this.isJoker(card));
+    return Array.from(this.activeCards.entries()).some(([playerId, card]) => {
+      if (!this.isJoker(card)) return false;
+      // Check if this specific joker has already been used
+      return !this.usedJokers.has(`${playerId}-${card}`);
+    });
   }
 
   getGameState() {
