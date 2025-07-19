@@ -8,10 +8,11 @@ const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: process.env.FRONTEND_URL || function(origin, callback) {
-      // Allow localhost and localtunnel origins
+      // Allow localhost, localtunnel, and CloudFlare tunnel origins
       if (!origin || 
           origin.includes('localhost') || 
           origin.includes('loca.lt') ||
+          origin.includes('trycloudflare.com') ||
           origin.includes('127.0.0.1')) {
         callback(null, true);
       } else {

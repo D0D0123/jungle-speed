@@ -25,18 +25,25 @@ This is a multiplayer web-based Jungle Speed card game with:
 ### Internet Exposure
 To expose the game to the internet for remote multiplayer:
 
+#### Option 1: LocalTunnel (Simple)
 ```bash
 ./expose-to-internet.sh
 ```
 
-This script:
-- Installs and uses LocalTunnel to create public URLs
-- Configures both frontend and backend for internet access
-- Exposes frontend at: `https://jungle-speed-frontend.loca.lt`
-- Exposes backend at: `https://jungle-speed-backend.loca.lt`
-- Automatically handles CORS and environment configuration
-- Restores local configuration when stopped with Ctrl+C
+#### Option 2: CloudFlare Tunnel (Recommended)
+```bash
+./expose-to-internet-cloudflare-tunnel.sh
+```
+
+Both scripts:
+- Automatically install required tunneling software
+- Configure both frontend and backend for internet access
+- Handle CORS and environment configuration
+- Restore local configuration when stopped with Ctrl+C
+
+**LocalTunnel**: Uses predictable URLs (`jungle-speed-frontend.loca.lt`)
+**CloudFlare Tunnel**: More reliable, uses random URLs (`abc123.trycloudflare.com`)
 
 Share the frontend URL with players to join from anywhere on the internet.
 
-See `INTERNET_EXPOSURE.md` for detailed documentation on how internet exposure works.
+See `INTERNET_EXPOSURE.md` for detailed documentation on both tunneling options.

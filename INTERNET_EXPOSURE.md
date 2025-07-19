@@ -137,6 +137,82 @@ LocalTunnel may have rate limits or temporary unavailability:
 - Check that ports 3000 and 3001 are available locally
 - Verify no other services are using these ports
 
+## CloudFlare Tunnel Setup
+
+### Quick Start with CloudFlare Tunnel
+
+```bash
+./expose-to-internet-cloudflare-tunnel.sh
+```
+
+This script provides a more reliable alternative to LocalTunnel using CloudFlare's infrastructure.
+
+### How CloudFlare Tunnel Works
+
+1. **Automatic Installation**: The script installs `cloudflared` CLI automatically
+2. **Quick Tunnels**: Uses `trycloudflare.com` for instant, no-account-required access
+3. **Dynamic Configuration**: Automatically configures frontend/backend communication
+4. **Better Reliability**: CloudFlare's global network provides better uptime
+
+### Expected Output (CloudFlare Tunnel)
+
+```
+Starting Jungle Speed services and exposing to internet via CloudFlare Tunnel...
+📡 Using trycloudflare.com (no account required)
+⚠️  URLs will be randomly generated and temporary
+🔧 Frontend will be configured after backend tunnel is established
+🔧 Configuring backend CORS for CloudFlare tunnel
+🚀 Starting backend server...
+🌐 Creating CloudFlare tunnel for backend...
+⏳ Waiting for backend tunnel to establish...
+✅ Backend tunnel established: https://abc123.trycloudflare.com
+🔧 Configuring frontend to use backend: https://abc123.trycloudflare.com
+🚀 Starting frontend server...
+🌐 Creating CloudFlare tunnel for frontend...
+⏳ Waiting for frontend tunnel to establish...
+✅ Frontend tunnel established: https://def456.trycloudflare.com
+
+🎉 Services exposed to internet via CloudFlare Tunnel:
+📡 Backend: https://abc123.trycloudflare.com
+🎮 Frontend: https://def456.trycloudflare.com
+
+🔗 Share this URL with players: https://def456.trycloudflare.com
+```
+
+### Custom Domains (Optional)
+
+To use custom domains with CloudFlare Tunnel:
+
+1. Set up a CloudFlare account
+2. Add your domain to CloudFlare
+3. Edit the script variables:
+   ```bash
+   DOMAIN_NAME="yourdomain.com"
+   BACKEND_SUBDOMAIN="jungle-speed-backend"
+   FRONTEND_SUBDOMAIN="jungle-speed-frontend"
+   ```
+4. Follow CloudFlare's tunnel authentication setup
+
+### CloudFlare Tunnel Troubleshooting
+
+#### Installation Issues
+
+- **macOS**: Requires Homebrew for automatic installation
+- **Linux**: Requires `wget` and `dpkg` for automatic installation
+- **Manual Installation**: Download from [CloudFlare releases](https://github.com/cloudflare/cloudflared/releases)
+
+#### Tunnel Connection Issues
+
+- Check `backend-tunnel.log` and `frontend-tunnel.log` for error details
+- Verify internet connection and CloudFlare service status
+- Try restarting the script if tunnels fail to establish
+
+#### Performance Considerations
+
+- CloudFlare Tunnel generally provides better performance than LocalTunnel
+- `trycloudflare.com` domains are temporary and change on each run
+- For production use, consider setting up named tunnels with custom domains
+
 ## Security Considerations
 
 - LocalTunnel exposes your local services to the public internet
@@ -146,9 +222,29 @@ LocalTunnel may have rate limits or temporary unavailability:
 
 ## Alternative Solutions
 
-If LocalTunnel doesn't work for your setup, consider:
+### CloudFlare Tunnel (Recommended Alternative)
+
+For a more reliable solution, use CloudFlare Tunnel:
+
+```bash
+./expose-to-internet-cloudflare-tunnel.sh
+```
+
+**Advantages:**
+- More reliable than LocalTunnel
+- Better performance and uptime
+- Free tier available with `trycloudflare.com` domains
+- No account required for basic usage
+- Production-ready infrastructure
+
+**Requirements:**
+- `cloudflared` CLI (auto-installed by script)
+- For custom domains: CloudFlare account and domain
+
+### Other Alternatives
+
+If neither LocalTunnel nor CloudFlare Tunnel work for your setup:
 
 - **ngrok**: More reliable but requires account for persistent subdomains
-- **Cloudflare Tunnel**: Free and reliable, requires Cloudflare account
 - **SSH Tunnels**: If you have access to a public server
 - **VPS Deployment**: Deploy to a cloud server for permanent access
