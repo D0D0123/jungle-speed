@@ -1,0 +1,127 @@
+.join-form-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2d5a27 0%, #4a7c59 100%);
+  font-family: Arial, sans-serif;
+}
+
+.join-form {
+  background: rgba(255,255,255,0.95);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+}
+
+.join-form h1 {
+  color: #2d5a27;
+  margin: 0 0 10px 0;
+  font-size: 2.5em;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.join-form p {
+  color: #666;
+  margin: 0 0 30px 0;
+  font-size: 1.1em;
+}
+
+.connection-status {
+  background: #ffc107;
+  color: #333;
+  padding: 10px 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+.input-group {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.join-button {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #4CAF50, #45a049);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.join-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(76,175,80,0.4);
+}
+
+.join-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border-left: 4px solid #c62828;
+  margin: 15px 0;
+  text-align: left;
+}
+
+.game-rules {
+  margin-top: 30px;
+  text-align: left;
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.game-rules h3 {
+  color: #2d5a27;
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.game-rules ul {
+  color: #555;
+  line-height: 1.6;
+  padding-left: 20px;
+}
+
+.game-rules li {
+  margin: 8px 0;
+}

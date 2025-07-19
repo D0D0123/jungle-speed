@@ -1,0 +1,164 @@
+.game-board {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2d5a27 0%, #4a7c59 100%);
+  color: white;
+  font-family: Arial, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-status {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  text-align: left;
+}
+
+.game-status h2 {
+  margin: 0 0 10px 0;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.players-circle {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  border: 3px dashed rgba(255,255,255,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.center-area {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bottle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.bottle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #8B4513;
+  background: linear-gradient(145deg, #D2691E, #A0522D);
+  font-size: 40px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.bottle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+.bottle.grabbable {
+  animation: pulse 1s infinite;
+  border-color: #FFD700;
+  box-shadow: 0 0 20px rgba(255,215,0,0.6);
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.bottle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.bank {
+  background: rgba(0,0,0,0.7);
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  color: #FFD700;
+  border: 1px solid #FFD700;
+}
+
+.player-controls {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.draw-button {
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(145deg, #4CAF50, #45a049);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.draw-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.draw-button:disabled {
+  background: #666;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.player-info {
+  text-align: center;
+  background: rgba(0,0,0,0.5);
+  padding: 10px 15px;
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.player-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.cooldown-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255,0,0,0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  z-index: 100;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
