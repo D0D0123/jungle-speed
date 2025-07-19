@@ -7,8 +7,19 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
+    origin: process.env.FRONTEND_URL || function(origin, callback) {
+      // Allow localhost and localtunnel origins
+      if (!origin || 
+          origin.includes('localhost') || 
+          origin.includes('loca.lt') ||
+          origin.includes('127.0.0.1')) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 

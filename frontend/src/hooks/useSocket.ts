@@ -10,7 +10,8 @@ export const useSocket = () => {
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    const newSocket = io('http://localhost:3001');
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
+    const newSocket = io(backendUrl);
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
@@ -64,6 +65,7 @@ export const useSocket = () => {
 
   const joinGame = useCallback((playerName: string) => {
     if (socket) {
+      console.log(`Joining game as ${playerName}`)
       socket.emit('join-game', playerName);
     }
   }, [socket]);

@@ -39,3 +39,6 @@ ehthumbs.db
 # Build outputs
 /build
 /dist
+
+# Rust backend (using Node.js backend instead)
+backend-rust/
